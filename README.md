@@ -1,11 +1,88 @@
-<div align="center">
+# 🇨🇳 1688 CargoBuy — Telegram Бот & WebApp для выкупа из Китая
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+Сервис выкупа одежды, обуви и аксессуаров с фабрик 1688 и Poizon:
+* **Telegram Бот (@kitaidostavka_bot):** интерактивное меню, WebApp каталог, калькулятор доставки, прием заявок по ссылкам.
+* **WebApp витрина:** одежда, обувь, сумки, расчет доставки карго, онлайн-трекинг, оплата через СБП, личный кабинет.
+* **CRM Панель администратора:** управление заказами, трек-номера карго и СДЭК, просмотр live-корзин, рассылки по сегментам.
+* **24/7 Anti-Sleep система:** бот работает без засыпания на сервере Railway.
 
-  <h1>Built with AI Studio</h2>
+---
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+## 🚀 Быстрый запуск на Railway через GitHub
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+### Шаг 1. Загрузка репозитория на GitHub
 
-</div>
+Если вы используете Git в терминале:
+```bash
+git init
+git add .
+git commit -m "Initial commit: 1688 CargoBuy Bot & WebApp"
+git branch -M main
+git remote add origin https://github.com/ВАШ_ЛОГИН/ИМЯ_РЕПОЗИТОРИЯ.git
+git push -u origin main
+```
+
+---
+
+### Шаг 2. Развертывание в Railway
+
+1. Перейдите на [railway.com](https://railway.com) и войдите через GitHub.
+2. Нажмите **«+ New Project»** → **«Deploy from GitHub repo»**.
+3. Выберите ваш репозиторий с проектом.
+4. Railway автоматически обнаружит файл `railway.json` / `Procfile` и запустит сборку:
+   * **Build:** `npm run build` (компиляция Vite + упаковка Node.js сервера)
+   * **Start:** `npm run start` (запуск `server.js`)
+   * **Healthcheck:** `/health`
+
+---
+
+### Шаг 3. Настройка переменных окружения (Variables) в Railway
+
+В панели Railway перейдите во вкладку **Variables** вашего сервиса и добавьте:
+
+| Переменная | Значение | Описание |
+|---|---|---|
+| `TELEGRAM_BOT_TOKEN` | `8612124409:AAETXqjPfeq3oWEwSFX3rarC3HQZ-D4kdpg` | Токен Telegram-бота |
+| `APP_URL` | `https://ваш-проект.up.railway.app` | Публичный URL вашего приложения (см. Шаг 4) |
+| `NODE_ENV` | `production` | Режим работы |
+
+*(Порт `PORT` Railway назначает автоматически, сервер считывает его сам).*
+
+---
+
+### Шаг 4. Включение публичного домена (Public Networking)
+
+1. В Railway перейдите в **Settings** сервиса.
+2. В блоке **Networking** нажмите **«Generate Domain»** (вы получите адрес вида `https://xxxx.up.railway.app`).
+3. Скопируйте этот адрес и укажите его в переменной `APP_URL` в разделе **Variables**.
+4. После сохранения бот автоматически обновит кнопку меню «🛍 Каталог 1688» на ваш новый домен!
+
+---
+
+## 🛡 Почему бот НЕ засыпает (24/7 Keep-Alive)?
+
+В проекте реализована трехуровневая защита от засыпания и сбоев:
+
+1. **Встроенный Self-Ping (Каждые 8 минут):**
+   * Сервер `server.ts` запускает фоновый таймер, который каждые 8 минут отправляет HTTP-запрос на собственный адрес `/health`. Это предотвращает перевод контейнера в спящий режим даже на бесплатных/хобби-планах.
+2. **Watchdog-контроллер Telegram Long Polling:**
+   * Каждые 45 секунд проверяется активность процесса приема сообщений от Telegram API. При любом сетевом разрыве или перезагрузке серверов Telegram соединение моментально переподключается без перезапуска приложения.
+3. **Автоматический перезапуск Railway (`RESTART_POLICY_ALWAYS`):**
+   * В файле `railway.json` включена директива постоянного перезапуска при любых системных сбоях.
+
+---
+
+## 🛠 Локальная разработка
+
+Для локального запуска:
+```bash
+npm install
+npm run dev
+```
+Сервер будет доступен по адресу: `http://localhost:3000`.
+
+Проверка статуса бота:
+```bash
+curl http://localhost:3000/api/telegram/status
+curl http://localhost:3000/health
+```

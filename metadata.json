@@ -1,0 +1,6 @@
+{
+  "name": "1688 CargoBuy — Выкуп и Доставка из Китая",
+  "description": "Сервис и Telegram WebApp для выкупа одежды, обуви и аксессуаров с 1688 и Poizon: интерактивный каталог, расчет логистики, отслеживание посылок, оплата в рублях и CRM-панель администратора с рассылками.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
